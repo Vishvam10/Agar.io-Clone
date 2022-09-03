@@ -16,9 +16,9 @@ socket.on("initReturn", (data) => {
     setInterval(() => {
         socket.emit("tick", {
             xVector: player.xVector,
-            yVector: player.yVector,
+            yVector: player.yVector
         })
-    }, 33)
+    }, 15)
 })
 
 socket.on("tock", (data) => {

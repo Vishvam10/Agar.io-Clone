@@ -36,19 +36,23 @@ canvas.addEventListener('mousemove',(event)=>{
         x: event.clientX,
         y: event.clientY
     };
-    const angleDeg = Math.atan2(mousePosition.y - (canvas.height/2), mousePosition.x - (canvas.width/2)) * 180 / Math.PI;
-    if(angleDeg >= 0 && angleDeg < 90){
-        xVector = 1 - (angleDeg / 90);
-        yVector = -(angleDeg / 90);
-    } else if(angleDeg >= 90 && angleDeg <= 180){
-        xVector = -(angleDeg - 90) / 90;
-        yVector = -(1 - ((angleDeg - 90) / 90));
-    } else if(angleDeg >= -180 && angleDeg < -90){
-        xVector = (angleDeg + 90) / 90;
-        yVector = (1 + ((angleDeg + 90) / 90));
-    } else if(angleDeg < 0 && angleDeg >= -90){
-        xVector = (angleDeg + 90) / 90;
-        yVector = (1 - ((angleDeg + 90) / 90));
+    const angle = Math.atan2(mousePosition.y - (canvas.height/2), mousePosition.x - (canvas.width/2)) * 180 / Math.PI;
+    if(angle >= 0 && angle < 90){
+        // console.log("Mouse is in the lower right quad")
+        xVector = 1 - (angle/90);
+        yVector = -(angle/90);
+    }else if(angle >= 90 && angle <= 180){
+        // console.log("Mouse is in the lower left quad")
+        xVector = -(angle-90)/90;
+        yVector = -(1 - ((angle-90)/90));
+    }else if(angle >= -180 && angle < -90){
+        // console.log("Mouse is in the upper left quad")
+        xVector = (angle+90)/90;
+        yVector = (1 + ((angle+90)/90));
+    }else if(angle < 0 && angle >= -90){
+        // console.log("Mouse is in the upper right quad")
+        xVector = (angle+90)/90;
+        yVector = (1 - ((angle+90)/90));
     }
 
     player.xVector = xVector;

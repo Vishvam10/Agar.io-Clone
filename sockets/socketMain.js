@@ -2,6 +2,8 @@
 
 const io = require("../servers").io;
 const orb = require("./classes/orbs");
+const checkForOrbCollisions = require("./checkCollision").checkForOrbCollisions;
+const checkForPlayerCollisions = require("./checkCollision").checkForPlayerCollisions;
 
 const Player = require('./classes/player');
 const PlayerConfig = require('./classes/playerConfig');
@@ -12,7 +14,7 @@ let players = [];
 
 let settings = {
     defaultOrbs : 500,
-    defaultSpeed : 6,
+    defaultSpeed : 10,
     defaultSize: 6,
     // As the player gets bigger, the zoom needs to go out
     defaultZoom : 1.5,
@@ -26,7 +28,6 @@ io.sockets.on("connect", (socket) => {
     // A player has connected
     let player = {};
     socket.on("init", (data) => {
-        
 
         // 0. Add the player to the game namespace
         socket.join("game");
@@ -47,7 +48,7 @@ io.sockets.on("connect", (socket) => {
                 playerX : player.playerData.locX,
                 playerY : player.playerData.locY,
             })
-        }, 33);
+        }, 15);
         
         socket.emit("initReturn", {
             orbs
@@ -62,15 +63,16 @@ io.sockets.on("connect", (socket) => {
         // a local variable for this callback for readability
         xV = player.playerConfig.xVector = data.xVector;
         yV = player.playerConfig.yVector = data.yVector;
-
-        if((player.playerData.locX < 5 && player.playerData.xVector < 0) || (player.playerData.locX > 500) && (xV > 0)){
-            player.playerData.locY -= speed * yV;
-        } else if((player.playerData.locY < 5 && yV > 0) || (player.playerData.locY > 500) && (yV < 0)){
-            player.playerData.locX += speed * xV;
-        } else{
-            player.playerData.locX += speed * xV;
-            player.playerData.locY -= speed * yV;
-        }    
+        if(xV && yV) {
+            if((player.playerData.locX < 5 && player.playerData.xVector < 0) || (player.playerData.locX > 500) && (xV > 0)){
+                player.playerData.locY -= speed * yV;
+            } else if((player.playerData.locY < 5 && yV > 0) || (player.playerData.locY > 500) && (yV < 0)){
+                player.playerData.locX += speed * xV;
+            } else{
+                player.playerData.locX += speed * xV;
+                player.playerData.locY -= speed * yV;
+            }    
+        }
     })
 
 })
