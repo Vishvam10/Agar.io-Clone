@@ -1,4 +1,4 @@
-class Orb{
+class Orb {
     constructor(settings){
         this.color = this.getRandomColor();
         this.locX = Math.floor(Math.random() * settings.worldWidth);

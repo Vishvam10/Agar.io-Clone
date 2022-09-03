@@ -5,7 +5,7 @@ class PlayerData {
         this.name = playerName;
         this.locX = Math.floor(settings.worldWidth * Math.random() + 10);
         this.locY  = Math.floor(settings.worldHeight * Math.random() + 10);
-        this.radius - settings.defaultSize;
+        this.radius = settings.defaultSize;
         this.color = this.getRandomColor();
     }
     getRandomColor(){

@@ -14,7 +14,7 @@ function draw() {
     players.forEach((p) => {
         context.beginPath();
         context.fillStyle = p.color;
-        context.arc(p.locX, p.locY , 10, 0, 2*Math.PI);
+        context.arc(p.locX, p.locY , p.radius, 0, 2*Math.PI);
         context.fill();
         context.lineWidth = 2;
         context.strokeStyle = "rgb(255,255,255)";
@@ -41,15 +41,15 @@ canvas.addEventListener('mousemove',(event)=>{
         // console.log("Mouse is in the lower right quad")
         xVector = 1 - (angle/90);
         yVector = -(angle/90);
-    }else if(angle >= 90 && angle <= 180){
+    } else if(angle >= 90 && angle <= 180){
         // console.log("Mouse is in the lower left quad")
         xVector = -(angle-90)/90;
         yVector = -(1 - ((angle-90)/90));
-    }else if(angle >= -180 && angle < -90){
+    } else if(angle >= -180 && angle < -90){
         // console.log("Mouse is in the upper left quad")
         xVector = (angle+90)/90;
         yVector = (1 + ((angle+90)/90));
-    }else if(angle < 0 && angle >= -90){
+    } else if(angle < 0 && angle >= -90){
         // console.log("Mouse is in the upper right quad")
         xVector = (angle+90)/90;
         yVector = (1 - ((angle+90)/90));
