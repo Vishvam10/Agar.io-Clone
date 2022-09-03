@@ -26,8 +26,8 @@ socket.on("tock", (data) => {
 })
 
 socket.on('tickTock',(data)=>{
-    player.locX = data.playerX
-    player.locY = data.playerY
+    player.locX = data.playerX;
+    player.locY = data.playerY;
 })
 
 

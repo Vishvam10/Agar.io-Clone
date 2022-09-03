@@ -27,10 +27,12 @@ initGame();
  
 // Issue a message to every connected socket every 30 FPS. So, 1/30th of second = 33ms
 setInterval(() => {
-    io.to("game").emit("tock", {
-        players,
-    })
-}, 15);
+    if(players.length > 0) {
+        io.to("game").emit("tock", {
+            players,
+        })
+    }
+}, 33);
 
 io.sockets.on("connect", (socket) => {
     // A player has connected
