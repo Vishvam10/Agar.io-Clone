@@ -1,6 +1,6 @@
 const Orb = require('./classes/orb')
 
-function checkForOrbCollisions(pData,pConfig, orbs, settings){
+function checkForOrbCollisions(pData, pConfig, orbs, settings) {
     return new Promise((resolve, reject)=>{
         orbs.forEach((orb,i)=>{
             // AABB Test(square)  - Axis-aligned bounding boxes
@@ -37,7 +37,7 @@ function checkForOrbCollisions(pData,pConfig, orbs, settings){
     });
 }
         
-function checkForPlayerCollisions(pData,pConfig,players,playerId){
+function checkForPlayerCollisions(pData, pConfig, players, playerId) {
     return new Promise((resolve, reject)=>{
         //PLAYER COLLISIONS	
         players.forEach((curPlayer,i)=>{

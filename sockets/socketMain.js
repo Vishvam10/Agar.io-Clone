@@ -24,6 +24,14 @@ let settings = {
 
 initGame();
 
+ 
+// Issue a message to every connected socket every 30 FPS. So, 1/30th of second = 33ms
+setInterval(() => {
+    io.to("game").emit("tock", {
+        players,
+    })
+}, 15);
+
 io.sockets.on("connect", (socket) => {
     // A player has connected
     let player = {};
@@ -41,14 +49,12 @@ io.sockets.on("connect", (socket) => {
         // 3. Make a master player object to hold them both
         player = new Player(socket.id, playerConfig, playerData)
         
-        // Issue a message to every connected socket every 30 FPS. So, 1/30th of second = 33ms
-        setInterval(() => {
-            io.to("game").emit("tock", {
-                players,
-                playerX : player.playerData.locX,
-                playerY : player.playerData.locY,
-            })
-        }, 15);
+        setInterval(()=>{
+            socket.emit('tickTock',{
+                playerX: player.playerData.locX,
+                playerY: player.playerData.locY,
+            });
+        },33)
         
         socket.emit("initReturn", {
             orbs
@@ -86,9 +92,36 @@ io.sockets.on("connect", (socket) => {
 
         }).catch(() => {
         })
+
+        let playerDeath = checkForPlayerCollisions(player.playerData,player.playerConfig,players,player.socketId)
+        playerDeath.then((data)=>{
+            // console.log("Player collision!!!")
+            // every socket needs to know the leaderBoard has changed
+            io.sockets.emit('updateLeaderBoard',getLeaderBoard());
+            // a player was absorbed. Let everyone know!
+            io.sockets.emit('playerDeath',data);
+        }).catch(()=>{
+            // console.log("No player collision")
+        })
+
     })
 
 })
+
+function getLeaderBoard(){
+    // sort the players in desc order
+    players.sort((a,b)=>{
+        return b.score - a.score;
+    });
+    let leaderBoard = players.map((curPlayer)=>{
+        return{
+            name: curPlayer.name,
+            score: curPlayer.score
+        }
+    })
+    return leaderBoard
+}
+
 
 function initGame() {
     for(let i=0; i<settings.defaultOrbs; i++) {
