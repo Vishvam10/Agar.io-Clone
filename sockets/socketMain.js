@@ -25,14 +25,14 @@ let settings = {
 initGame();
 
  
-// Issue a message to every connected socket every 30 FPS. So, 1/30th of second = 33ms
+// Issue a message to every connected socket every 60 FPS. So, 1/60th of second = 16ms. We will do 15.
 setInterval(() => {
     if(players.length > 0) {
         io.to("game").emit("tock", {
             players,
         })
     }
-}, 33);
+}, 15);
 
 io.sockets.on("connect", (socket) => {
     // A player has connected
@@ -56,7 +56,7 @@ io.sockets.on("connect", (socket) => {
                 playerX: player.playerData.locX,
                 playerY: player.playerData.locY,
             });
-        },33)
+        },15)
         
         socket.emit("initReturn", {
             orbs
@@ -89,8 +89,9 @@ io.sockets.on("connect", (socket) => {
                 newOrb : orbs[data]
             }
             // A collision happened
+            io.sockets.emit('updateLeaderBoard',getLeaderBoard());
             // Emit to all sockets that the orb is replaced
-            io.sockets.emit("orbSwitch", orbData)
+            io.sockets.emit("orbSwitch", orbData);
 
         }).catch(() => {
         })
@@ -101,11 +102,33 @@ io.sockets.on("connect", (socket) => {
             // every socket needs to know the leaderBoard has changed
             io.sockets.emit('updateLeaderBoard',getLeaderBoard());
             // a player was absorbed. Let everyone know!
-            io.sockets.emit('playerDeath',data);
+            io.sockets.emit('playerDeath', data);
         }).catch(()=>{
             // console.log("No player collision")
         })
 
+    })
+    socket.on('disconnect',(data)=>{
+        // console.log(data)
+        // find out who just left... which player in players
+        // make sure the player exists
+        if(player.playerData){
+            players.forEach((currPlayer,i)=>{
+                // if they match...
+                if(currPlayer.uid == player.playerData.uid){
+                    // these are the droids we're looking for
+                    players.splice(i,1);
+                    io.sockets.emit('updateLeaderBoard',getLeaderBoard());
+                }
+            });
+            const updateStats = `
+            UPDATE stats
+                SET highScore = CASE WHEN highScore < ? THEN ? ELSE highScore END,
+                mostOrbs = CASE WHEN mostOrbs < ? THEN ? ELSE mostOrbs END,
+                mostPlayers = CASE WHEN mostPlayers < ? THEN ? ELSE mostPlayers END
+            WHERE username = ?
+            `
+        }
     })
 
 })

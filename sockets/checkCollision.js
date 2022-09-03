@@ -39,10 +39,8 @@ function checkForOrbCollisions(pData, pConfig, orbs, settings) {
         
 function checkForPlayerCollisions(pData, pConfig, players, playerId) {
     return new Promise((resolve, reject)=>{
-        //PLAYER COLLISIONS	
         players.forEach((curPlayer,i)=>{
             if(curPlayer.uid != playerId){
-                // console.log(curPlayer.uid,pData.uid)
                 let pLocx = curPlayer.locX
                 let pLocy = curPlayer.locY
                 let pR = curPlayer.radius
@@ -51,15 +49,14 @@ function checkForPlayerCollisions(pData, pConfig, players, playerId) {
                 && pData.locX < pLocx + pData.radius + pR
                 && pData.locY + pData.radius + pR > pLocy 
                 && pData.locY < pLocy + pData.radius + pR){
-            // Pythagoras test
                     distance = Math.sqrt(
                         ((pData.locX - pLocx) * (pData.locX - pLocx)) + 
                         ((pData.locY - pLocy) * (pData.locY - pLocy))	
                         );      
                     if(distance < pData.radius + pR){
-                //COLLISION!!  
+                        // Collision   
                         if(pData.radius > pR){
-                    // ENEMY DEATH
+                            // The enemy dies
                             let collisionData = updateScores(pData,curPlayer);
                             if(pConfig.zoom > 1){
                                 pConfig.zoom -= (pR * 0.25) * .001;
@@ -68,16 +65,6 @@ function checkForPlayerCollisions(pData, pConfig, players, playerId) {
                             resolve(collisionData);
 
                         }
-                        // else if(pData.radius < pR){           
-                        //     let collisionData = updateScores(curPlayer,pData);
-                        //     players.forEach((p,i)=>{
-                        //         console.log(players[i].name, i)
-                        //         if (pData.uid == p.uid){
-                        //             players.splice(i, 1);
-                        //         }
-                        //     }); 
-                        //     resolve(collisionData);
-                        // }
                     }
                 }
             }
